@@ -1,0 +1,130 @@
+---
+- name: "Обработка Виртуальных машин"
+  hosts: all
+  gather_facts: yes
+
+  vars:
+    api_user: "{{ lookup('env', 'PROXMOX_API_USER') }}"
+    api_password: "{{ lookup('env', 'PROXMOX_API_PASSWORD') }}"
+    user: "{{ lookup('env', 'PROXMOX_SSH_USER') }}" # пользователь способный ходить по ключу
+
+  vars_files:
+    - vms.yml
+
+  tasks:
+    - name: Создание папки бэкапов
+      remote_user: '{{ user }}'
+      become: yes
+      file:
+        path: /etc/pve/qemu-server/backup
+        state: directory
+
+    - name: Бэкап конфигов виртуальных машин
+      become: yes
+      shell: "cp /etc/pve/qemu-server/*.conf /etc/pve/qemu-server/backup/"
+
+    - name: Применение конфирурации виртуальных машин
+      proxmox_kvm:
+        timeout: 3000
+        api_user: "{{ api_user }}"
+        api_password: "{{ api_password }}"
+        api_host: "{{ item.value.api_host }}"
+        node: "{{ item.value.node }}"
+        name: "{{ item.value.name }}"
+        newid: "{{ item.value.vmid }}"
+        storage: "{{ item.value.storage }}"
+        clone: "{{ item.value.clone_vm }}"
+        full: true
+        cores: "{{ item.value.cores }}"
+        memory: "{{ item.value.memory }}"
+        boot: cnd
+        autostart: "{{ item.value.autostart }}"
+        bootdisk: scsi
+      loop: "{{ lookup('dict', vms) }}"
+      delegate_to: localhost
+      when:
+        ansible_nodename == '{{ item.value.node }}'
+
+    - name: Перекур на создание конфигов
+      pause:
+        seconds: 15
+      delegate_to: localhost
+
+    - name: Update VMs memory
+      become: yes
+      lineinfile:
+        dest: '/etc/pve/qemu-server/{{ item.value.vmid }}.conf'
+        regexp: "^memory:"
+        line: "memory: {{ item.value.memory }}"
+      loop: "{{ lookup('dict', vms) }}"
+      when:
+        ansible_nodename == '{{ item.value.node }}'
+
+    - name: Update VMs cpu
+      become: yes
+      lineinfile:
+        dest: '/etc/pve/qemu-server/{{ item.value.vmid }}.conf'
+        regexp: "^cores:"
+        line: "cores: {{ item.value.cores }}"
+      loop: "{{ lookup('dict', vms) }}"
+      when:
+        ansible_nodename == '{{ item.value.node }}'
+
+    - name: Перекур на создание конфигов
+      pause:
+        seconds: 5
+      delegate_to: localhost
+
+    - name: Переключение на bridge из конфига
+      become: yes
+      shell: "sed -i 's/vmbr0/{{ item.value.bridge }}/' /etc/pve/qemu-server/{{ item.value.vmid }}.conf"
+      loop: "{{ lookup('dict', vms) }}"
+      tags: ['bridge']
+      when:
+        ansible_nodename == '{{ item.value.node }}'
+
+    - name: Перекур на создание конфигов
+      pause:
+        seconds: 5
+      delegate_to: localhost
+
+    - name: Применение настроек сети
+      become: yes
+      shell: "qm set {{ item.value.vmid }}  --ipconfig0 ip={{ item.value.ipaddress }},gw={{ item.value.gateway }}"
+      loop: "{{ lookup('dict', vms) }}"
+      when:
+        ansible_nodename == '{{ item.value.node }}'
+
+    - name: Копирование ключа
+      copy:
+        src: id_rsa.pub
+        dest: /tmp/id_rsa.pub
+
+
+    - name: Добавление ключей SSH
+      remote_user: bodyu_rv
+      become: yes
+      shell: "qm set {{ item.value.vmid }} --sshkey {{ key_name }}"
+      args:
+        chdir: /tmp
+      loop: "{{ lookup('dict', vms) }}"
+      when:
+        ansible_nodename == '{{ item.value.node }}'
+
+    - name: Изменение состояния машин
+      proxmox_kvm:
+        timeout: 300
+        api_host: "{{ item.value.api_host }}"
+        node: "{{ item.value.node }}"
+        api_password: "{{ api_password }}"
+        api_user: "{{ api_user }}"
+        vmid: "{{ item.value.vmid }}"
+        pool: "{{ item.value.pool | default(None)  }}"
+        state: "{{ item.value.state }}"
+      loop: "{{ lookup('dict', vms) }}"
+      delegate_to: localhost
+      when:
+        ansible_nodename == '{{ item.value.node }}'
+
+
+

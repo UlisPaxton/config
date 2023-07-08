@@ -1,0 +1,49 @@
+---
+- name: test
+  hosts: all
+  gather_facts: no
+
+
+  vars:
+    #api_host: "{{ lookup('env', 'PROXMOX_API_HOST') }}"
+    api_host: pm.local
+    api_user: "{{ lookup('env', 'PROXMOX_API_USER') }}"
+    container_password: "{{ lookup('env', 'PROXMOX_CONTAINER_PASSWORD') }}"
+    api_password: "{{ lookup('env', 'PROXMOX_API_PASSWORD') }}"
+    node: pm
+
+  vars_files:
+    - containers.yaml
+
+  tasks:
+    - name: "Создание контейнеров"
+      proxmox:
+        timeout: 300
+        vmid: "{{ item.value.vmid }}"
+        hostname: "{{ item.value.name }}"
+        ostemplate: "{{ item.value.ostemplate }}"
+        node: "{{ node }}"
+        api_user: "{{ api_user }}"
+        api_password: "{{ api_password }}"
+        api_host: "{{ api_host }}"
+        password: "{{ container_password }}"
+        netif: '{"net0":"name=eth0,gw={{ item.value.gateway }},ip={{ item.value.ipaddress }},bridge=vmbr0"}'
+        nameserver: "{{ item.value.nameserver }}"
+        disk: "{{ item.value.disk }}"
+        cores: "{{ item.value.cores }}"
+        memory: "{{ item.value.memory }}"
+        storage: st1_down_slot
+      loop: "{{ lookup('dict', containers) }}"
+      delegate_to: localhost
+
+    - name: Запуск контейнеров
+      proxmox:
+        timeout: 300
+        vmid: "{{ item.value.vmid }}"
+        api_user: "{{ api_user }}"
+        api_password: "{{ api_password }}"
+        api_host: "{{ api_host }}"
+        node: "{{ node }}"
+        state: "{{ item.value.state }}"
+      loop: "{{ lookup('dict', containers) }}"
+      delegate_to: localhost

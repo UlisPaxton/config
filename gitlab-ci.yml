@@ -1,0 +1,59 @@
+image: ulispaxton1/ansible_proxmox_cicd:v1
+stages:
+  - test_configuration
+  - entity creation
+  - notify
+
+check configs:
+  tags:
+    - docker
+  stage: test_configuration
+  script:
+    - apt update --fix-missing && apt install python3-pip curl -y
+    - pip3 install -r requirements.txt
+    - python3 config_validator.py
+
+deploy VMs:
+  tags:
+    - docker
+  stage: entity creation
+  script:
+    - apt update --fix-missing && apt install curl -y
+    - cat /builds/locb/config.tmp/SSH_KEY > /root/.ssh/id_rsa
+    - cp ./id_rsa.pub /root/.ssh/
+    - chmod 600 ~/.ssh/id_rsa && chmod 600 /root/.ssh/id_rsa.pub
+    - ansible-playbook -i hosts vm_deploy_playbook.yaml -u bodyu_rv
+    - sh .ci_notify.sh ✅
+
+
+deploy Containers:
+  tags:
+    - docker
+  stage: entity creation
+  script:
+    - apt update --fix-missing && apt install curl -y
+    - cat /builds/locb/config.tmp/SSH_KEY > /root/.ssh/id_rsa
+    - cp ./id_rsa.pub /root/.ssh/
+    - chmod 600 ~/.ssh/id_rsa && chmod 600 /root/.ssh/id_rsa.pub
+    - ansible-playbook -i hosts container_deploy_playbook.yaml -u bodyu_rv
+    - sh .ci_notify.sh ✅
+
+Добавление доменных имён:
+  tags:
+    - docker
+  stage: entity creation
+  script:
+    - apt update --fix-missing && apt install curl -y
+    - cat /builds/locb/config.tmp/SSH_KEY > /root/.ssh/id_rsa
+    - cp ./id_rsa.pub /root/.ssh/
+    - chmod 600 ~/.ssh/id_rsa && chmod 600 /root/.ssh/id_rsa.pub
+    - ansible-playbook -i hosts domain_names_playbook.yaml -u bodyu_rv -v
+    - sh .ci_notify.sh ✅
+
+notify_error:
+  stage: notify
+  script:
+  - sh .ci_notify.sh ❌
+  when: on_failure
+
+

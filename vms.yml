@@ -1,0 +1,253 @@
+#    Имена шаблонов
+#   Astra 1.7 Орёл - astra-template
+#   Astra 1.7 Воронеж - T-astra-voronegh-server
+#   debian - debian-template
+#   centos - centos7-template
+#   astra смоленск - astra-smolensk
+
+
+key_name: id_rsa.pub
+vms:
+
+  102-gitlab.2.103:
+    # тачка для сборки образов docker
+    clone_vm: debian-template
+    name: gitlab.local
+    vmid: 102
+    ipaddress: 192.168.4.103/24
+    gateway: 192.168.4.1
+    storage: "local-lvm"
+    pool: pool2
+    node: pm
+    api_host: pm.local
+    cores: 4
+    sockets: 1
+    memory: 6000
+    bridge: vmbr1
+    autostart: true
+    state: current
+
+  105-km1.local.2.40:
+    # тачка для сборки образов docker
+    clone_vm: debian-template
+    name: km1.local
+    vmid: 105
+    ipaddress: 192.168.4.40/24
+    gateway: 192.168.4.1
+    storage: "local-lvm"
+    node: pm
+    api_host: pm.local
+    cores: 4
+    sockets: 1
+    memory: 8000
+    bridge: vmbr1
+    autostart: true
+    pool: pool2
+    state: current
+
+  pv1.local_108-kn2.local.0.198:
+    node: pv1
+    api_host: pv1.local
+    # тачка для сборки образов docker
+    clone_vm: debian-template
+    name: kn2.local
+    vmid: 108
+    ipaddress: 192.168.0.199/24
+    gateway: 192.168.0.1
+    storage: "local-lvm"
+    pool: ""
+    cores: 4
+    sockets: 1
+    memory: 5000
+    bridge: vmbr0
+    autostart: true
+    state: current
+
+  106-kn1.local.2.41:
+    # тачка для сборки образов docker
+    clone_vm: debian-template
+    name: kn1.local
+    vmid: 106
+    ipaddress: 192.168.4.41/24
+    gateway: 192.168.4.1
+    storage: "local-lvm"
+    node: pm
+    api_host: pm.local
+    cores: 4
+    sockets: 1
+    memory: 8000
+    bridge: vmbr1
+    autostart: true
+    pool: pool2
+    state: current
+
+  200-docker.99:
+    # тачка для сборки образов docker
+    clone_vm: debian-template
+    name: docker.local
+    vmid: 200
+    ipaddress: 192.168.0.99/24
+    gateway: 192.168.0.1
+    storage: "local-lvm"
+    node: pm
+    api_host: pm.local
+    cores: 4
+    sockets: 1
+    memory: 16384
+    bridge: vmbr0
+    autostart: true
+    state: current
+    #    boot: "cnd"
+
+  13-grafana.2.30:
+    clone_vm: debian-template
+    name: grafana.local
+    vmid: 103
+    ipaddress: 192.168.4.30/24
+    gateway: 192.168.4.1
+    storage: "local-lvm"
+    node: pm
+    api_host: pm.local
+    cores: 4
+    sockets: 1
+    memory: 8196
+    bridge: vmbr1
+    autostart: true
+    pool: pool2
+    state: current
+
+  300-alddc1.corp.ingos.ru.4.10:
+    node: pm
+    api_host: pm.local
+    clone_vm: astra-smolensk
+    name: alddc1.corp.ingos.ru
+    vmid: 300
+    ipaddress: 192.168.4.10/24
+    gateway: 192.168.4.1
+    pool: pool2
+    storage: "local-lvm"
+    cores: 4
+    sockets: 1
+    memory: 8200
+    bridge: vmbr1
+    autostart: false
+    state: current
+
+  301-alddc2.corp.ingos.ru.4.11:
+    node: pm
+    api_host: pm.local
+    clone_vm: astra-smolensk
+    name: alddc2.corp.ingos.ru
+    vmid: 301
+    ipaddress: 192.168.4.11/24
+    gateway: 192.168.4.1
+    pool: pool2
+    storage: "local-lvm"
+    cores: 4
+    sockets: 1
+    memory: 8200
+    bridge: vmbr1
+    autostart: false
+    state: current
+
+  302-net-deploy.corp.ingos.ru.2.12:
+    node: pm
+    api_host: pm.local
+    clone_vm: astra-smolensk
+    name: net-deploy.corp.ingos.ru
+    vmid: 302
+    ipaddress: 192.168.4.12/24
+    gateway: 192.168.4.1
+    pool: pool2
+    storage: "local-lvm"
+    cores: 2
+    sockets: 1
+    memory: 2048
+    bridge: vmbr1
+    autostart: false
+    state: current
+
+  304-monitor.corp.ingos.ru.4.14:
+    node: pm
+    api_host: pm.local
+    clone_vm: astra-smolensk
+    name: monitor.corp.ingos.ru
+    vmid: 304
+    ipaddress: 192.168.4.14/24
+    gateway: 192.168.4.1
+    pool: pool2
+    storage: "local-lvm"
+    cores: 2
+    sockets: 1
+    memory: 2048
+    bridge: vmbr1
+    autostart: false
+    state: current
+
+  306-log.corp.ingos.ru.4.16:
+    node: pm
+    api_host: pm.local
+    clone_vm: astra-smolensk
+    name: log.corp.ingos.ru
+    vmid: 306
+    ipaddress: 192.168.4.16/24
+    gateway: 192.168.4.1
+    pool: pool2
+    storage: "local-lvm"
+    cores: 2
+    sockets: 1
+    memory: 2048
+    bridge: vmbr1
+    autostart: false
+    state: current
+
+  308-client1.corp.ingos.ru.3.10:
+    node: pm
+    api_host: pm.local
+    clone_vm: T-astra-voronegh-server
+    name: client1.corp.ingos.ru
+    vmid: 308
+    ipaddress: 192.168.3.12/24
+    gateway: 192.168.3.1
+    pool: pool3
+    storage: "local-lvm"
+    cores: 4
+    sockets: 1
+    memory: 4000
+    bridge: vmbr2
+    autostart: false
+    state: started
+
+  309-dc1.corp.ingos.ru.3.20:
+    node: pm
+    api_host: pm.local
+    clone_vm: astra-smolensk
+    name: dc1.corp.ingos.ru
+    vmid: 309
+    ipaddress: 192.168.3.20/24
+    gateway: 192.168.3.1
+    pool: pool3
+    storage: "local-lvm"
+    cores: 4
+    sockets: 1
+    memory: 8000
+    bridge: vmbr2
+    autostart: false
+    state: started
+
+  310-dc2.corp.ingos.ru.3.21:
+    node: pm
+    api_host: pm.local
+    clone_vm: astra-smolensk
+    name: dc2.corp.ingos.ru
+    vmid: 310
+    ipaddress: 192.168.3.21/24
+    gateway: 192.168.3.1
+    pool: pool3
+    storage: "local-lvm"
+    cores: 4
+    sockets: 1
+    memory: 8000
+    bridge: vmbr2
+    autostart: false
+    state: started

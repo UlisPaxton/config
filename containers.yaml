@@ -1,0 +1,124 @@
+#Доступные шаблоны:
+#  "st1_down_slot:vztmpl/ubuntu-18.04-standard_18.04.1-1_amd64.tar.gz"
+#  "st1_down_slot:vztmpl/debian-11-standard_11.6-1amd64.tar.zst"
+
+
+containers:
+  111-blog-2.10:
+    vmid: 111
+    name: blog.local
+    ostemplate: "st1_down_slot:vztmpl/ubuntu-18.04-standard_18.04.1-1_amd64.tar.gz"
+    ipaddress: 192.168.4.150/24
+    gateway: 192.168.4.1
+    nameserver: 192.168.4.1
+    disk: 5
+    cores: 1
+    memory: 256
+    state: started
+    #net: '{"net0":"name=eth0,ip=dhcp,ip6=dhcp,bridge=vmbr0"}'
+
+  100-webrouter.206:
+    vmid: 100
+    name: webrouter.local
+    ostemplate: "st1_down_slot:vztmpl/ubuntu-18.04-standard_18.04.1-1_amd64.tar.gz"
+    ipaddress: 192.168.4.100/24
+    gateway: 192.168.4.1
+    nameserver: 192.168.4.1
+    disk: 5
+    cores: 1
+    memory: 256
+    #net: '{"net0":"name=eth0,ip=dhcp,ip6=dhcp,bridge=vmbr0"}'
+    description: "created with ansible"
+    state: started
+
+  801-contacter-redis.72:
+    vmid: 801
+    name: contacter-redis.local
+    ostemplate: "st1_down_slot:vztmpl/ubuntu-18.04-standard_18.04.1-1_amd64.tar.gz"
+    ipaddress: 192.168.4.101/24
+    gateway: 192.168.4.1
+    nameserver: 192.168.4.1
+    disk: 15
+    cores: 2
+    memory: 4096
+    description: "created with ansible"
+    state: stopped
+
+  802-contacter-app.72:
+    vmid: 802
+    name: contacter-app.local
+    ostemplate: "st1_down_slot:vztmpl/ubuntu-18.04-standard_18.04.1-1_amd64.tar.gz"
+    ipaddress: 192.168.4.102/24
+    gateway: 192.168.4.1
+    nameserver: 192.168.4.1
+    disk: 5
+    cores: 1
+    memory: 1024
+    #net: '{"net0":"name=eth0,ip=dhcp,ip6=dhcp,bridge=vmbr0"}'
+    description: "created with ansible"
+    state: stopped
+
+  803-test-deply-73:
+    vmid: 803
+    name: test-deploy.local
+    ostemplate: "st1_down_slot:vztmpl/ubuntu-18.04-standard_18.04.1-1_amd64.tar.gz"
+    ipaddress: 192.168.0.73/24
+    gateway: 192.168.0.1
+    nameserver: 192.168.0.1
+    disk: 20
+    cores: 1
+    memory: 1025
+    description: "created with ansible"
+    state: stopped
+
+  804-kafka1-74:
+    vmid: 804
+    name: kafka1.local
+    ostemplate: "st1_down_slot:vztmpl/ubuntu-18.04-standard_18.04.1-1_amd64.tar.gz"
+    ipaddress: 192.168.0.74/24
+    gateway: 192.168.0.1
+    nameserver: 192.168.0.1
+    disk: 15
+    cores: 2
+    memory: 1025
+    description: "created with ansible, kafka1 0.74"
+    state: started
+
+  805-kafka2-75:
+    vmid: 805
+    name: kafka2.local
+    ostemplate: "st1_down_slot:vztmpl/ubuntu-18.04-standard_18.04.1-1_amd64.tar.gz"
+    ipaddress: 192.168.0.75/24
+    gateway: 192.168.0.1
+    nameserver: 192.168.0.1
+    disk: 15
+    cores: 2
+    memory: 1025
+    description: "created with ansible, kafka1 0.75"
+    state: started
+
+  806-kafka2-76:
+    vmid: 806
+    name: kafka3.local
+    ostemplate: "st1_down_slot:vztmpl/ubuntu-18.04-standard_18.04.1-1_amd64.tar.gz"
+    ipaddress: 192.168.0.76/24
+    gateway: 192.168.0.1
+    nameserver: 192.168.0.1
+    disk: 15
+    cores: 2
+    memory: 1025
+    description: "created with ansible, kafka1 0.76"
+    state: started
+
+  807-kafka-test-77:
+    vmid: 807
+    name: kafka-test.local
+    ostemplate: "st1_down_slot:vztmpl/ubuntu-18.04-standard_18.04.1-1_amd64.tar.gz"
+    ipaddress: 192.168.0.77/24
+    gateway: 192.168.0.1
+    nameserver: 192.168.0.1
+    disk: 15
+    cores: 4
+    memory: 1025
+    description: "created with ansible, kafka1 0.77"
+    state: started

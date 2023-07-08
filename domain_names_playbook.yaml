@@ -1,0 +1,22 @@
+---
+- name: "Создание доменных имен"
+  hosts: all
+
+  vars_files:
+    - vms.yml
+    - containers.yaml
+
+  tasks:
+    - name: Добавление доменных имен виртуальных машин
+      shell: ssh admin@192.168.0.1 -q -o StrictHostKeyChecking=no "ip dns static add address={{ item.value.ipaddress.split('/')[0] }} name={{ item.value.name }} "
+      loop: "{{ lookup('dict', vms) }}"
+      delegate_to: localhost
+      register: result
+      failed_when: "not ('entry already exists' not in result.stdout or result.stdout != '') or result.stderr != ''"
+
+    - name: Добавление доменных имен контейнеров
+      shell: ssh admin@192.168.0.1 -q -o StrictHostKeyChecking=no "ip dns static add address={{ item.value.ipaddress.split('/')[0] }} name={{ item.value.name }} "
+      loop: "{{ lookup('dict', containers) }}"
+      delegate_to: localhost
+      register: result
+      failed_when: "not ('entry already exists' not in result.stdout or result.stdout != '') or result.stderr != ''"
