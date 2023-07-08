@@ -1,4 +1,4 @@
-## Управление инфроструктурой proxmox на основе процессов gitlab CI/CD (IaaC)  
+## Управление инфроструктурой proxmox на основе процессов gitlab CI/CD и ansible (IaaC)  
 
 #### Требования  
 - Gitlab
